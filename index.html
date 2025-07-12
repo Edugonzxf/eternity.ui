@@ -341,11 +341,14 @@
 async function cargarHistorial() {
   const chat = document.getElementById("chatContent");
 
-  // Puedes usar fetch aquí en el futuro
-  const mensajes = [
-    { pregunta: "¿Quién eres?", respuesta: "Soy Eternity, tu IA personal." },
-    { pregunta: "¿Versión?", respuesta: "0.4.2.7" }
-  ];
+  // LLAMADA REAL
+  const response = await fetch("https://script.google.com/macros/s/AKfycbwOrnpCdRuP2LKqHo9UHH6P0Vaola0d4bbbJm-bxwGsKxWBg9vHzDnZVFRnZF1LLLBz/exec", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ tipo: "historial", limit: 10 })
+  });
+  const data = await response.json();
+  const mensajes = data.historial || [];
 
   mensajes.forEach(par => {
     const userBubble = document.createElement("div");
@@ -371,6 +374,7 @@ async function cargarHistorial() {
 
   chat.scrollTop = chat.scrollHeight;
 }
+
 
 async function enviar() {
   const textarea = document.getElementById("pregunta");
@@ -408,8 +412,14 @@ async function enviar() {
   */
 
   // Simulación
-  const respuesta = "Respuesta simulada desde Eternity.";
-
+  // LLAMADA REAL AL SCRIPT DE GOOGLE
+  const response = await fetch("https://script.google.com/macros/s/AKfycbwOrnpCdRuP2LKqHo9UHH6P0Vaola0d4bbbJm-bxwGsKxWBg9vHzDnZVFRnZF1LLLBz/exec", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ tipo: "pregunta", pregunta })
+  });
+  const data = await response.json();
+  const respuesta = data.respuestas?.[0] || "Sin respuesta.";
   energizar();
   const wrapper = document.createElement("div");
   wrapper.className = "bubble eternity";
